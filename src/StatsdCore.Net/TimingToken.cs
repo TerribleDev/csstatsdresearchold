@@ -29,7 +29,7 @@ namespace StatsdClient
     public void Dispose()
     {
       _stopwatch.Stop();
-      _client.LogTiming(_name, (int)_stopwatch.ElapsedMilliseconds);
+      _client.LogTimingAsync(_name, (int)_stopwatch.ElapsedMilliseconds);
     }
   }
 }

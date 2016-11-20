@@ -9,7 +9,7 @@ namespace StatsdClient
 {
     internal sealed class TcpOutputChannel : IOutputChannel
     {
-        private readonly TcpClient _tcpClient;
+        private TcpClient _tcpClient;
         private NetworkStream _stream;
         private readonly string _host;
         private readonly int _port;
@@ -26,7 +26,6 @@ namespace StatsdClient
             _tcpClient = new TcpClient();
             _asyncLock = new AsyncLock();
         }
-
         public async Task SendAsync(string line)
         {
             await SendWithRetryAsync(line, _reconnectEnabled ? _retryAttempts - 1 : 0);
@@ -83,5 +82,27 @@ namespace StatsdClient
                 }
             }
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        void Dispose(bool disposing)
+        {
+            if(!disposedValue)
+            {
+                if(disposing)
+                {
+                    _tcpClient.Dispose();
+                }
+                _tcpClient = null;
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }

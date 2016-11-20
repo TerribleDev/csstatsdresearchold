@@ -81,13 +81,13 @@ namespace StatsdClient
         private void InitialiseInternal(Func<IOutputChannel> createOutputChannel, string prefix, bool rethrowOnError)
         {
             _prefix = prefix;
-            if (_prefix != null && _prefix.EndsWith("."))
+            if (_prefix != null && _prefix.EndsWith(".", StringComparison.Ordinal))
             {
                 _prefix = _prefix.Substring(0, _prefix.Length - 1);
             }
             try
             {
-                _outputChannel = createOutputChannel();
+                _outputChannel = createOutputChannel?.Invoke();
             }
             catch (Exception ex)
             {
@@ -105,30 +105,24 @@ namespace StatsdClient
         /// </summary>
         /// <param name="name">The metric name.</param>
         /// <param name="count">The counter value (defaults to 1).</param>
-        public async Task LogCountAsync(string name, long count = 1)
-        {
-            await SendMetricAsync(MetricType.COUNT, name, _prefix, count);
-        }
+        public Task LogCountAsync(string name, long count = 1) => SendMetricAsync(MetricType.COUNT, name, _prefix, count);
+        
 
         /// <summary>
         ///     Log a timing / latency
         /// </summary>
         /// <param name="name">The metric name.</param>
         /// <param name="milliseconds">The duration, in milliseconds, for this metric.</param>
-        public async Task LogTimingAsync(string name, long milliseconds)
-        {
-            await SendMetricAsync(MetricType.TIMING, name, _prefix, milliseconds);
-        }
+        public Task LogTimingAsync(string name, long milliseconds) => SendMetricAsync(MetricType.TIMING, name, _prefix, milliseconds);
+        
 
         /// <summary>
         ///     Log a gauge.
         /// </summary>
         /// <param name="name">The metric name</param>
         /// <param name="value">The value for this gauge</param>
-        public async Task LogGaugeAsync(string name, long value)
-        {
-            await SendMetricAsync(MetricType.GAUGE, name, _prefix, value);
-        }
+        public  Task LogGaugeAsync(string name, long value) => SendMetricAsync(MetricType.GAUGE, name, _prefix, value);
+        
 
         /// <summary>
         ///     Log to a set
@@ -139,10 +133,8 @@ namespace StatsdClient
         ///     Logging to a set is about counting the number
         ///     of occurrences of each event.
         /// </remarks>
-        public async Task LogSetAsync(string name, long value)
-        {
-            await SendMetricAsync(MetricType.SET, name, _prefix, value);
-        }
+        public  Task LogSetAsync(string name, long value) => SendMetricAsync(MetricType.SET, name, _prefix, value);
+        
 
         /// <summary>
         ///     Log a raw metric that will not get aggregated on the server.
@@ -150,10 +142,8 @@ namespace StatsdClient
         /// <param name="name">The metric name.</param>
         /// <param name="value">The metric value.</param>
         /// <param name="epoch">(optional) The epoch timestamp. Leave this blank to have the server assign an epoch for you.</param>
-        public async Task LogRawAsync(string name, long value, long? epoch = null)
-        {
-            await SendMetricAsync(MetricType.RAW, name, String.Empty, value, epoch.HasValue ? epoch.ToString() : null);
-        }
+        public  Task LogRawAsync(string name, long value, long? epoch = null) => SendMetricAsync(MetricType.RAW, name, String.Empty, value, epoch.HasValue ? epoch.ToString() : null);
+        
 
         /// <summary>
         ///     Log a calendargram metric
@@ -161,10 +151,8 @@ namespace StatsdClient
         /// <param name="name">The metric namespace</param>
         /// <param name="value">The unique value to be counted in the time period</param>
         /// <param name="period">The time period, can be one of h,d,dow,w,m</param>
-        public async Task LogCalendargramAsync(string name, string value, string period)
-        {
-            await SendMetricAsync(MetricType.CALENDARGRAM, name, _prefix, value, period);
-        }
+        public  Task LogCalendargramAsync(string name, string value, string period) => SendMetricAsync(MetricType.CALENDARGRAM, name, _prefix, value, period);
+        
 
         /// <summary>
         ///     Log a calendargram metric
@@ -172,28 +160,26 @@ namespace StatsdClient
         /// <param name="name">The metric namespace</param>
         /// <param name="value">The unique value to be counted in the time period</param>
         /// <param name="period">The time period, can be one of h,d,dow,w,m</param>
-        public async Task LogCalendargramAsync(string name, long value, string period)
-        {
-            await SendMetricAsync(MetricType.CALENDARGRAM, name, _prefix, value, period);
-        }
+        public Task LogCalendargramAsync(string name, long value, string period) => SendMetricAsync(MetricType.CALENDARGRAM, name, _prefix, value, period);
+        
 
-        private async Task SendMetricAsync(string metricType, string name, string prefix, long value, string postFix = null)
+        private Task SendMetricAsync(string metricType, string name, string prefix, long value, string postFix = null)
         {
             if (value < 0)
             {
                 Trace.TraceWarning("Metric value for {0} was less than zero: {1}. Not sending.", name, value);
-                return;
+                return Task.FromResult(0);
             }
-            await SendMetricAsync(metricType, name, prefix, value.ToString(), postFix);
+            return SendMetricAsync(metricType, name, prefix, value.ToString(), postFix);
         }
 
-        private async Task SendMetricAsync(string metricType, string name, string prefix, string value, string postFix = null)
+        private  Task SendMetricAsync(string metricType, string name, string prefix, string value, string postFix = null)
         {
-            if (String.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
-            await _outputChannel.SendAsync(PrepareMetric(metricType, name, prefix, value, postFix));
+            return _outputChannel.SendAsync(PrepareMetric(metricType, name, prefix, value, postFix));
         }
 
         /// <summary>

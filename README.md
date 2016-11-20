@@ -1,6 +1,6 @@
-# statsd-csharp-client
+# statsdcore.net
 
-A simple c# client library for [statsd.net](https://github.com/lukevenediger/statsd.net/) and [statsd](https://github.com/etsy/statsd/).
+A simple c# client library for [statsd.net](https://github.com/lukevenediger/statsd.net/) and [statsd](https://github.com/etsy/statsd/) compatible with dotnet core!!! This was originally a fork of [another client](https://github.com/lukevenediger/statsd.net).
 
 # Features
 * Log counts, timings, gauges, sets, calendargrams and raw metrics
@@ -75,12 +75,11 @@ The connection will attempt to reconnect if something goes wrong, and will try t
 # Project Information
 
 ## Target Runtimes
-* .Net 3.5
-* .Net 4.0
-* .Net 4.5
+* netstandard1.3
 
 ## Authors
 Luke Venediger - lukev@lukev.net and [@lukevenediger](http://twitter.com/lukevenediger)
+Tommy Parnell - tommy@terribledev.io and [@TerribleDev](http://twitter.com/terribledev)
 
 ## See Also
 * [statsd.net](https://github.com/lukevenediger/statsd.net/) 

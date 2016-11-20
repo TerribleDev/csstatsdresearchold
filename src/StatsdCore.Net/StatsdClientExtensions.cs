@@ -12,9 +12,10 @@ namespace StatsdClient
         /// </summary>
         /// <param name="name">The metric name.</param>
         /// <param name="count">The counter value (defaults to 1).</param>
+        [Obsolete("This will go away, if you want to call this in a sync fashion you should just call this with ?.Wait()", false)]
         public static void LogCount(this IStatsd client, string name, int count = 1)
         {
-            client.LogCountAsync(name, count).Wait();
+            client.LogCountAsync(name, count)?.Wait();
         }
 
         /// <summary>
@@ -22,9 +23,10 @@ namespace StatsdClient
         /// </summary>
         /// <param name="name">The metric name.</param>
         /// <param name="milliseconds">The duration, in milliseconds, for this metric.</param>
+        [Obsolete("This will go away, if you want to call this in a sync fashion you should just call this with ?.Wait()", false)]
         public static void LogTiming(this IStatsd client, string name, long milliseconds)
         {
-            client.LogTimingAsync(name, milliseconds).Wait();
+            client.LogTimingAsync(name, milliseconds)?.Wait();
         }
 
         /// <summary>
@@ -32,9 +34,10 @@ namespace StatsdClient
         /// </summary>
         /// <param name="name">The metric name</param>
         /// <param name="value">The value for this gauge</param>
+        [Obsolete("This will go away, if you want to call this in a sync fashion you should just call this with ?.Wait()", false)]
         public static void LogGauge(this IStatsd client, string name, int value)
         {
-            client.LogGaugeAsync(name, value).Wait();
+            client.LogGaugeAsync(name, value)?.Wait();
         }
 
         /// <summary>
@@ -45,9 +48,10 @@ namespace StatsdClient
         /// <remarks>
         /// Logging to a set is about counting the number of occurrences of each event.
         /// </remarks>
+        [Obsolete("This will go away, if you want to call this in a sync fashion you should just call this with ?.Wait()", false)]
         public static void LogSet(this IStatsd client, string name, int value)
         {
-            client.LogSetAsync(name, value).Wait();
+            client.LogSetAsync(name, value)?.Wait();
         }
 
         /// <summary>
@@ -56,9 +60,10 @@ namespace StatsdClient
         /// <param name="name">The metric name.</param>
         /// <param name="value">The metric value.</param>
         /// <param name="epoch">(optional) The epoch timestamp. Leave this blank to have the server assign an epoch for you.</param>
+        [Obsolete("This will go away, if you want to call this in a sync fashion you should just call this with ?.Wait()", false)]
         public static void LogRaw(this IStatsd client, string name, int value, long? epoch = null)
         {
-            client.LogRawAsync(name, value, epoch).Wait();
+            client.LogRawAsync(name, value, epoch)?.Wait();
         }
 
         /// <summary>
@@ -67,9 +72,10 @@ namespace StatsdClient
         /// <param name="name">The metric namespace</param>
         /// <param name="value">The unique value to be counted in the time period</param>
         /// <param name="period">The time period, can be one of h,d,dow,w,m</param>
+        [Obsolete("This will go away, if you want to call this in a sync fashion you should just call this with ?.Wait()", false)]
         public static void LogCalendargram(this IStatsd client, string name, string value, string period)
         {
-            client.LogCalendargramAsync(name, value, period).Wait();
+            client.LogCalendargramAsync(name, value, period)?.Wait();
         }
 
         /// <summary>
@@ -78,9 +84,10 @@ namespace StatsdClient
         /// <param name="name">The metric namespace</param>
         /// <param name="value">The unique value to be counted in the time period</param>
         /// <param name="period">The time period, can be one of h,d,dow,w,m</param>
+        [Obsolete("This will go away, if you want to call this in a sync fashion you should just call this with ?.Wait()", false)]
         public static void LogCalendargram(this IStatsd client, string name, long value, string period)
         {
-            client.LogCalendargramAsync(name, value, period).Wait();
+            client.LogCalendargramAsync(name, value, period)?.Wait();
         }
 
         /// <summary>
@@ -89,6 +96,7 @@ namespace StatsdClient
         /// <param name="client">The statsd client instance.</param>
         /// <param name="name">The namespace of the timing metric.</param>
         /// <param name="duration">The duration to log (will be converted into milliseconds)</param>
+        [Obsolete("This will go away, if you want to call this in a sync fashion you should just call this with ?.Wait()", false)]
         public static void LogTiming(this IStatsd client, string name, TimeSpan duration)
         {
             client.LogTiming(name, (long)duration.TotalMilliseconds);
@@ -103,6 +111,7 @@ namespace StatsdClient
         /// <remarks>
         /// Wrap the code you want to measure in a using() {} block. The TimingToken instance will log the duration when it is disposed.
         /// </remarks>
+        [Obsolete("This will go away, if you want to call this in a sync fashion you should just call this with ?.Wait()", false)]
         public static TimingToken LogTiming(this IStatsd client, string name)
         {
             return new TimingToken(client, name);
